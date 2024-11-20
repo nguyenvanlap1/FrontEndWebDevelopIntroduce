@@ -2,34 +2,42 @@ import createApiClient from "./api.service";
 
 class AuthService {
     constructor(baseUrl = "http://localhost:3000/api/auth") {
-        // Pass 'true' to enable credentials
-        this.api = createApiClient(baseUrl, true);
+        this.api = createApiClient(baseUrl);
     }
-
-    async logout() {
-        return (await this.api.post("/logout")).data;
-    }
-
-    async checkLogin() {
-        return (await this.api.post("/checklogin")).data;
-    }
-
-    async login(data) {
-    try {
-        const response = await this.api.post("/login", data, { withCredentials: true });
-        return response.data;
-    } catch (error) {
-        // Kiểm tra nếu lỗi đến từ phản hồi của server
+    handleError(error) {
         if (error.response && error.response.data && error.response.data.message) {
-            console.error("Error logging in user:", error.response.data.message);
-            throw new Error(error.response.data.message); // Ném ra thông điệp lỗi từ server
+            throw new Error(error.response.data.message);
         } else {
-            console.error("Error logging in user:", error.message || "Unknown error occurred");
-            throw new Error(error.message || "Unknown error occurred"); // Ném ra thông điệp lỗi chung
+            throw new Error(error.message || "Unknown error occurred");
         }
     }
-}
 
+    // Logout function
+    async logout() {
+        try {
+            return (await this.api.post("/logout", {}, { withCredentials: true })).data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    // Check login status
+    async checkLogin() {
+        try {
+            return (await this.api.post("/checklogin", {}, { withCredentials: true })).data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    // Login function with credentials
+    async login(data) {
+        try {
+            return (await this.api.post("/login", data, { withCredentials: true })).data;
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
 }
 
 export default new AuthService();

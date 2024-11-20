@@ -10,27 +10,40 @@
 
     <v-btn text>Home</v-btn>
     <v-btn text>About</v-btn>
-    <v-btn text>Contact</v-btn>
-    <v-btn text @click="login">Đăng Nhập</v-btn>
-    <v-btn text>Đăng Xuất</v-btn>
+    <v-btn text><router-link @click="findAll" to="/nxb">NXB</router-link></v-btn>
+    <v-btn text><router-link to="/login">Đăng Nhập</router-link></v-btn>
+    <v-btn text @Click="logout">Đăng Xuất</v-btn>
   </v-app-bar>
 </template>
-
 <script>
 import authService from '../services/auth.service';
-
+import nxbService from '../services/nxb.service';
 export default {
   name: 'AppBar',
   methods: {
-    async login() {
+    async logout() {
       try {
-        const result = await authService.login({ msnv: 'NV12345', password: "12345" });
-        console.log(result);
-      } catch (error) {
-        console.error('Failed to login:', error.message);
+        console.log(await authService.logout());
+      } catch(error) {
+        console.log(error);
       }
     },
-  },
+
+    async  findAll() {
+      try{
+        console.log(await nxbService.findAll());
+      }catch(error) {
+          console.log(error);
+        }
+      }
+    },
+  async mounted() {
+      try{
+        console.log(await authService.checkLogin());
+      } catch(error) {
+        console.log(error);
+      }
+  }
 };
 </script>
 

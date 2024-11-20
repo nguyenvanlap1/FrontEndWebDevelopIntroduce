@@ -1,17 +1,14 @@
-import axios from "axios";
+import axios from 'axios';
 
-const commonConfig = {
+const createApiClient = (baseURL) => {
+  return axios.create({
+    baseURL,
+    withCredentials: true, // Thêm dòng này nếu cần gửi cookie với yêu cầu
     headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
-};
-
-const createApiClient = (baseURL = 'http://localhost:3000/api') => {
-    return axios.create({
-        baseURL,
-        ...commonConfig,
-    });
+  });
 };
 
 export default createApiClient;
