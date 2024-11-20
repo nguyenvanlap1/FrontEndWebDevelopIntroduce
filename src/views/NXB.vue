@@ -13,23 +13,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="publisher in publishers" :key="publisher.manxb">
-              <td>{{ publisher._id}}</td>
-              <td>{{ publisher.tennxb }}</td>
-              <td>{{ publisher.diachi }}</td>
+            <tr v-for="nxb in nxbs" :key="nxb._id">
+              <td>{{ nxb._id }}</td>
+              <td>{{ nxb.tennxb }}</td>
+              <td>{{ nxb.diachi }}</td>
               <td>
-                <v-btn small color="primary" @click="deletePublisher(publisher._id)">Xóa</v-btn>
+                <v-btn small color="primary" @click="deleteNxb(nxb._id)">Xóa</v-btn>
               </td>
             </tr>
           </tbody>
         </v-simple-table>
       </v-card-text>
     </v-card>
-  </v-container>
 
-  <v-container>
-    <v-btn small color="primary" @click="isthemnxb = !isthemnxb">Thêm</v-btn>
-    <v-form @submit.prevent="handleSubmit" v-if="isthemnxb">
+    <v-btn small color="primary" @click="codangthemnxb = !codangthemnxb">Thêm</v-btn>
+    <v-form @submit.prevent="handleSubmit" v-if="codangthemnxb">
       <v-text-field
         v-model="form.manxb"
         label="Mã NXB"
@@ -56,8 +54,8 @@ import nxbService from '../services/nxb.service';
 export default {
   data() {
     return {
-      isthemnxb: false,
-      publishers: [],
+      codangthemnxb: false,
+      nxbs: [],
       form: {
         manxb: "",
         tennxb: "",
@@ -66,34 +64,18 @@ export default {
     };
   },
   methods: {
-    editPublisher(publisher) {
-      alert(`Chỉnh sửa nhà xuất bản: ${publisher.tennxb}`);
-      // Thực hiện các hành động chỉnh sửa tại đây
-    },
     async handleSubmit() {
-      await nxbService.create({
-        manxb: this.form.manxb,
-        tennxb: this.form.tennxb,
-        diachi: this.form.diachi
-      });
-      this.publishers = await nxbService.findAll();
+      await nxbService.create(this.form);
+      this.nxbs = await nxbService.findAll();
       this.isthemnxb = false;
     },
-    async deletePublisher(manxb) {
-      try {
-        await nxbService.delete(manxb);
-        this.publishers = await nxbService.findAll();
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    async deleteNxb(id) {
+      await nxbService.delete(id);
+      this.nxbs = await nxbService.findAll();
+    }
   },
   async mounted() {
-    try {
-      this.publishers = await nxbService.findAll();
-    } catch (error) {
-      console.log(error);
-    }
+    this.nxbs = await nxbService.findAll();
   }
 };
 </script>
